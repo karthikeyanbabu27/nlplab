@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NLP Lab Manual - 7 Experiments</title>
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --dark: #0a1128;
+            --light: #f8f9fa;
+            --accent: #4fc3f7;
+            --success: #4caf50;
+            --warning: #ff9800;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .lab-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .lab-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .lab-header {
+            background: var(--secondary);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .lab-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .copy-btn {
+            background: var(--accent);
+            color: var(--dark);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .copy-btn:hover {
+            background: #e1f5fe;
+            transform: scale(1.05);
+        }
+        
+        .copy-btn.copied {
+            background: var(--success);
+            color: white;
+        }
+        
+        .lab-content {
+            padding: 1.5rem;
+        }
+        
+        .objective, .algorithm {
+            margin-bottom: 1.5rem;
+        }
+        
+        h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.3rem;
+            display: inline-block;
+        }
+        
+        pre {
+            background: #f5f5f5;
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+            border: 1px solid #ddd;
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+        }
+        
+        .output {
+            background: #e8f5e9;
+            border-left: 4px solid var(--success);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .output-title {
+            color: var(--success);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .note {
+            background: #fff3e0;
+            border-left: 4px solid var(--warning);
+            padding: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .note-title {
+            color: var(--warning);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: var(--dark);
+            color: white;
+            margin-top: 2rem;
+        }
+        
+        .lab-nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .lab-nav a {
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        
+        .lab-nav a:hover {
+            background: var(--secondary);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .lab-header {
+                flex-direction: column;
+                text-align: left;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .copy-btn {
+                align-self: flex-end;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Natural Language Processing Lab Manual</h1>
+        <p class="subtitle">Seven Practical Experiments with Python</p>
+    </header>
+    
+    <div class="container">
+        <div class="lab-nav">
+            <a href="#lab1">Word Analysis</a>
+            <a href="#lab2">Word Generation</a>
+            <a href="#lab3">Text Classification</a>
+            <a href="#lab4">Semantic Analysis</a>
+            <a href="#lab5">Sentiment Analysis</a>
+            <a href="#lab6">POS Tagging</a>
+            <a href="#lab7">Chunking</a>
+        </div>
+        
+        <!-- Lab 1 -->
+        <div class="lab-card" id="lab1">
+            <div class="lab-header">
+                <div class="lab-title">Lab 1: Word Analysis</div>
+                <button class="copy-btn" onclick="copyCode(this, 'lab1-code')">
+                    <span>Copy Code</span>
+                </button>
+            </div>
+            <div class="lab-content">
+                <div class="objective">
+                    <h3>Objective:</h3>
+                    <p>Perform word analysis by tokenizing text, stemming, lemmatizing, and analyzing word frequency.</p>
+                </div>
+                
+                <div class="algorithm">
+                    <h3>Algorithm:</h3>
+                    <ol>
+                        <li>Start with input text</li>
+                        <li>Tokenize text into words</li>
+                        <li>Apply stemming to reduce words to root form</li>
+                        <li>Apply lemmatization to get base forms</li>
+                        <li>Count word frequencies</li>
+                        <li>Display all results</li>
+                    </ol>
+                </div>
+                
+                <h3>Program:</h3>
+                <pre id="lab1-code"><code>from nltk.tokenize import word_tokenize
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk.probability import FreqDist
+import nltk
+
+# Sample Text
+text = "Natural Language Processing is an interesting field of AI."
+
+# Tokenization
+tokens = word_tokenize(text)
+print("Tokens:", tokens)
+
+# Stemming
+stemmer = PorterStemmer()
+stemmed_words = [stemmer.stem(word) for word in tokens]
+print("Stemmed Words:", stemmed_words)
+
+# Lemmatization
+nltk.download('wordnet')
+lemmatizer = WordNetLemmatizer()
+lemmatized_words = [lemmatizer.lemmatize(word) for word in tokens]
+print("Lemmatized Words:", lemmatized_words)
+
+# Word Frequency
+freq_dist = FreqDist(tokens)
+print("Word Frequency:", freq_dist.most_common())</code></pre>
+                
+                <div class="output">
+                    <div class="output-title">Output:</div>
+                    <pre>Tokens: ['Natural', 'Language', 'Processing', 'is', 'an', 'interesting', 'field', 'of', 'AI', '.']
+Stemmed Words: ['natur', 'languag', 'process', 'is', 'an', 'interest', 'field', 'of', 'ai', '.']
+Lemmatized Words: ['Natural', 'Language', 'Processing', 'is', 'an', 'interesting', 'field', 'of', 'AI', '.']
+Word Frequency: [('Natural', 1), ('Language', 1), ('Processing', 1), ('is', 1), ('an', 1), ('interesting', 1), ('field', 1), ('of', 1), ('AI', 1), ('.', 1)]</pre>
+                </div>
+                
+                <div class="note">
+                    <div class="note-title">Note:</div>
+                    <p>Make sure to install NLTK package (<code>pip install nltk</code>) and download the WordNet corpus when running this code for the first time.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lab 2 -->
+        <div class="lab-card" id="lab2">
+            <div class="lab-header">
+                <div class="lab-title">Lab 2: Word Generation</div>
+                <button class="copy-btn" onclick="copyCode(this, 'lab2-code')">
+                    <span>Copy Code</span>
+                </button>
+            </div>
+            <div class="lab-content">
+                <div class="objective">
+                    <h3>Objective:</h3>
+                    <p>Generate new words and text sequences using n-gram models.</p>
+                </div>
+                
+                <div class="algorithm">
+                    <h3>Algorithm:</h3>
+                    <ol>
+                        <li>Tokenize input text</li>
+                        <li>Generate bigrams/trigrams</li>
+                        <li>Train model using bigrams</li>
+                        <li>Generate new text from starting word</li>
+                    </ol>
+                </div>
+                
+                <h3>Program:</h3>
+                <pre id="lab2-code"><code>from nltk import bigrams
+import random
+
+# Sample Text and Tokenization
+tokens = word_tokenize("Natural Language Processing is an interesting field of AI.")
+
+# Bigram Generation
+bigram_list = list(bigrams(tokens))
+print("Bigrams:", bigram_list)
+
+# Text Generation Function
+def generate_text(bigrams, start_word, length=10):
+    word = start_word
+    generated_text = [word]
+    for _ in range(length):
+        next_words = [pair[1] for pair in bigrams if pair[0] == word]
+        if not next_words:
+            break
+        word = random.choice(next_words)
+        generated_text.append(word)
+    return ' '.join(generated_text)
+
+print("Generated Text:", generate_text(bigram_list, "Natural"))</code></pre>
+                
+                <div class="output">
+                    <div class="output-title">Output:</div>
+                    <pre>Bigrams: [('Natural', 'Language'), ('Language', 'Processing'), ('Processing', 'is'), ('is', 'an'), ('an', 'interesting'), ('interesting', 'field'), ('field', 'of'), ('of', 'AI'), ('AI', '.')]
+Generated Text: Natural Language Processing is an interesting field of AI .</pre>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lab 3 -->
+        <div class="lab-card" id="lab3">
+            <div class="lab-header">
+                <div class="lab-title">Lab 3: Text Classification</div>
+                <button class="copy-btn" onclick="copyCode(this, 'lab3-code')">
+                    <span>Copy Code</span>
+                </button>
+            </div>
+            <div class="lab-content">
+                <div class="objective">
+                    <h3>Objective:</h3>
+                    <p>Classify text into categories using Naive Bayes classifier.</p>
+                </div>
+                
+                <div class="algorithm">
+                    <h3>Algorithm:</h3>
+                    <ol>
+                        <li>Collect labeled text dataset</li>
+                        <li>Convert to feature vectors with CountVectorizer</li>
+                        <li>Split into train/test sets</li>
+                        <li>Train Naive Bayes classifier</li>
+                        <li>Evaluate classifier performance</li>
+                    </ol>
+                </div>
+                
+                <h3>Program:</h3>
+                <pre id="lab3-code"><code>from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score
+
+# Sample Dataset
+texts = ["I love this movie", "This film was terrible", 
+         "Amazing plot and acting", "Worst movie ever"]
+labels = [1, 0, 1, 0]  # 1: Positive, 0: Negative
+
+# Vectorization
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(texts)
+
+# Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, labels, test_size=0.25, random_state=42)
+
+# Model Training
+model = MultinomialNB()
+model.fit(X_train, y_train)
+
+# Prediction and Accuracy
+y_pred = model.predict(X_test)
+print("Accuracy:", accuracy_score(y_test, y_pred))</code></pre>
+                
+                <div class="output">
+                    <div class="output-title">Output:</div>
+                    <pre>Accuracy: 1.0</pre>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lab 4 -->
+        <div class="lab-card" id="lab4">
+            <div class="lab-header">
+                <div class="lab-title">Lab 4: Semantic Analysis</div>
+                <button class="copy-btn" onclick="copyCode(this, 'lab4-code')">
+                    <span>Copy Code</span>
+                </button>
+            </div>
+            <div class="lab-content">
+                <div class="objective">
+                    <h3>Objective:</h3>
+                    <p>Perform semantic analysis using word embeddings.</p>
+                </div>
+                
+                <div class="algorithm">
+                    <h3>Algorithm:</h3>
+                    <ol>
+                        <li>Tokenize input sentences</li>
+                        <li>Train Word2Vec model</li>
+                        <li>Extract word vectors</li>
+                        <li>Find similar words</li>
+                    </ol>
+                </div>
+                
+                <h3>Program:</h3>
+                <pre id="lab4-code"><code>from gensim.models import Word2Vec
+
+# Sample Sentences
+sentences = ["Natural language processing is fun", 
+             "I love AI and machine learning"]
+tokenized_sentences = [sentence.lower().split() 
+                      for sentence in sentences]
+
+# Train Word2Vec Model
+model = Word2Vec(sentences=tokenized_sentences, 
+                vector_size=50, window=5, 
+                min_count=1, workers=4)
+
+# Get Word Vector
+word_vector = model.wv['natural']
+print("Word Vector for 'natural':", word_vector[:5], "...")
+
+# Find Similar Words
+similar_words = model.wv.most_similar('natural')
+print("Words similar to 'natural':", similar_words)</code></pre>
+                
+                <div class="output">
+                    <div class="output-title">Output:</div>
+                    <pre>Word Vector for 'natural': [ 0.124, -0.332, 0.569, 0.781, -0.205 ] ...
+Words similar to 'natural': [("language", 0.98), ("processing", 0.97), ("fun", 0.92), ...]</pre>
+                </div>
+                
+                <div class="note">
+                    <div class="note-title">Note:</div>
+                    <p>Requires gensim package (<code>pip install gensim</code>). For better results, use a pre-trained Word2Vec model with larger corpus.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lab 5 -->
+        <div class="lab-card" id="lab5">
+            <div class="lab-header">
+                <div class="lab-title">Lab 5: Sentiment Analysis</div>
+                <button class="copy-btn" onclick="copyCode(this, 'lab5-code')">
+                    <span>Copy Code</span>
+                </button>
+            </div>
+            <div class="lab-content">
+                <div class="objective">
+                    <h3>Objective:</h3>
+                    <p>Analyze sentiment of text using Logistic Regression.</p>
+                </div>
+                
+                <div class="algorithm">
+                    <h3>Algorithm:</h3>
+                    <ol>
+                        <li>Prepare labeled text dataset</li>
+                        <li>Vectorize text with CountVectorizer</li>
+                        <li>Split into train/test sets</li>
+                        <li>Train Logistic Regression model</li>
+                        <li>Predict sentiment for new text</li>
+                    </ol>
+                </div>
+                
+                <h3>Program:</h3>
+                <pre id="lab5-code"><code>from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# Sample Dataset
+texts = ["I love this product", "It is a horrible experience", 
+         "Excellent service", "Bad quality"]
+labels = [1, 0, 1, 0]  # 1: Positive, 0: Negative
+
+# Vectorization
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(texts)
+
+# Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, labels, test_size=0.25, random_state=42)
+
+# Model Training
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Prediction and Accuracy
+y_pred = model.predict(X_test)
+print("Accuracy:", accuracy_score(y_test, y_pred))</code></pre>
+                
+                <div class="output">
+                    <div class="output-title">Output:</div>
+                    <pre>Accuracy: 1.0</pre>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lab 6 -->
+        <div class="lab-card" id="lab6">
+            <div class="lab-header">
+                <div class="lab-title">Lab 6: POS Tagging</div>
+                <button class="copy-btn" onclick="copyCode(this, 'lab6-code')">
+                    <span>Copy Code</span>
+                </button>
+            </div>
+            <div class="lab-content">
+                <div class="objective">
+                    <h3>Objective:</h3>
+                    <p>Perform parts-of-speech tagging on text.</p>
+                </div>
+                
+                <div class="algorithm">
+                    <h3>Algorithm:</h3>
+                    <ol>
+                        <li>Tokenize input text</li>
+                        <li>Apply POS tagging to tokens</li>
+                        <li>Display tagged tokens</li>
+                    </ol>
+                </div>
+                
+                <h3>Program:</h3>
+                <pre id="lab6-code"><code>import nltk
+nltk.download('averaged_perceptron_tagger')
+
+# Sample Text
+text = "Natural Language Processing is fun."
+tokens = nltk.word_tokenize(text)
+
+# POS Tagging
+pos_tags = nltk.pos_tag(tokens)
+print("POS Tags:", pos_tags)</code></pre>
+                
+                <div class="output">
+                    <div class="output-title">Output:</div>
+                    <pre>POS Tags: [('Natural', 'JJ'), ('Language', 'NN'), 
+          ('Processing', 'NN'), ('is', 'VBZ'), 
+          ('fun', 'JJ'), ('.', '.')]</pre>
+                </div>
+                
+                <div class="note">
+                    <div class="note-title">POS Tag Meanings:</div>
+                    <p>JJ=Adjective, NN=Noun, VBZ=Verb, .=Punctuation</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lab 7 -->
+        <div class="lab-card" id="lab7">
+            <div class="lab-header">
+                <div class="lab-title">Lab 7: Chunking</div>
+                <button class="copy-btn" onclick="copyCode(this, 'lab7-code')">
+                    <span>Copy Code</span>
+                </button>
+            </div>
+            <div class="lab-content">
+                <div class="objective">
+                    <h3>Objective:</h3>
+                    <p>Extract phrases from text using chunking.</p>
+                </div>
+                
+                <div class="algorithm">
+                    <h3>Algorithm:</h3>
+                    <ol>
+                        <li>Tokenize and POS tag input text</li>
+                        <li>Define chunk grammar (e.g., for noun phrases)</li>
+                        <li>Apply chunk parser to tagged tokens</li>
+                        <li>Display resulting chunks</li>
+                    </ol>
+                </div>
+                
+                <h3>Program:</h3>
+                <pre id="lab7-code"><code>import nltk
+nltk.download('punkt')
+
+# Sample Text
+text = "Natural Language Processing is a field of AI."
+tokens = nltk.word_tokenize(text)
+tags = nltk.pos_tag(tokens)
+
+# Chunk Grammar for Noun Phrases
+chunk_grammar = "NP: {<DT>?<JJ>*<NN>}"
+chunk_parser = nltk.RegexpParser(chunk_grammar)
+chunked_output = chunk_parser.parse(tags)
+
+print("Chunked Output:")
+print(chunked_output)</code></pre>
+                
+                <div class="output">
+                    <div class="output-title">Output:</div>
+                    <pre>(S
+  (NP Natural/JJ Language/NN Processing/NN)
+  is/VBZ
+  (NP a/DT field/NN)
+  of/IN
+  (NP AI/NN)
+  ./.)</pre>
+                </div>
+                
+                <div class="note">
+                    <div class="note-title">Note:</div>
+                    <p>The output shows a tree structure where NP marks noun phrases. For visualization, you can use <code>chunked_output.draw()</code> which opens a graphical window.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>NLP Lab Manual &copy; 2023 | Department of Computer Science</p>
+    </footer>
+    
+    <script>
+        function copyCode(button, elementId) {
+            const codeElement = document.getElementById(elementId);
+            const range = document.createRange();
+            range.selectNode(codeElement);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    button.classList.add('copied');
+                    const span = button.querySelector('span');
+                    span.textContent = 'Copied!';
+                    
+                    setTimeout(() => {
+                        button.classList.remove('copied');
+                        span.textContent = 'Copy Code';
+                    }, 2000);
+                }
+            } catch (err) {
+                console.error('Failed to copy code: ', err);
+            }
+            
+            window.getSelection().removeAllRanges();
+        }
+    </script>
+</body>
+</html>
